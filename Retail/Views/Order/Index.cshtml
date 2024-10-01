@@ -1,0 +1,151 @@
+﻿@model IEnumerable<Azure.Storage.Queues.Models.QueueMessage>
+
+@{
+    ViewBag.Title = "Order and Image Processing Queue";
+}
+
+<h2>Order and Image Processing Queue</h2>
+
+<!-- Show message if any -->
+@if (ViewBag.StatusMessage != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.StatusMessage
+    </div>
+}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1em;
+    }
+
+    thead {
+        background-color: #333;
+        color: #fff;
+    }
+
+    th, td {
+        padding: 0.75em;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    form {
+        margin-top: 1em;
+        padding: 1em;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .form-group {
+        margin-bottom: 1em;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5em;
+        font-weight: bold;
+    }
+
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 0.375em 0.75em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .btn-primary {
+        background-color: #333;
+        border-color: #333;
+        color: #fff;
+        padding: 0.5em 1em;
+        border-radius: 4px;
+        text-align: center;
+        text-decoration: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #555;
+            border-color: #555;
+        }
+
+    .btn-danger {
+        background-color: #d9534f;
+        border-color: #d43f3a;
+        color: white;
+        padding: 0.5em 1em;
+        border-radius: 4px;
+        text-align: center;
+    }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+            border-color: #ac2925;
+        }
+
+    .btn-success {
+        background-color: #5cb85c;
+        border-color: #4cae4c;
+        color: white;
+        padding: 0.5em 1em;
+        border-radius: 4px;
+        text-align: center;
+    }
+
+        .btn-success:hover {
+            background-color: #449d44;
+            border-color: #398439;
+        }
+</style>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var message in Model)
+        {
+            <tr>
+                <td>@message.MessageText</td>
+                <td>
+                    <!-- Delete Button -->
+                    <form asp-action="Delete" method="post" style="display:inline;">
+                        <input type="hidden" name="messageId" value="@message.MessageId" />
+                        <input type="hidden" name="popReceipt" value="@message.PopReceipt" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Form to handle order processing and image uploading -->
+<form asp-action="ProcessOrder" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="orderId">Order ID</label>
+        <input type="text" name="orderId" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="image">Upload Image</label>
+        <input type="file" name="image" class="form-control-file" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Add Order and Upload Image</button>
+</form>

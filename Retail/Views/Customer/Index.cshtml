@@ -1,0 +1,32 @@
+﻿@model IEnumerable<CustomerProfile>
+
+@{
+    ViewBag.Title = "Customer Profiles";
+}
+
+<h2>Customer Profiles</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td>@customer.Name</td>
+                <td>@customer.Email</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Customer", new { partitionKey = customer.PartitionKey, rowKey = customer.RowKey })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("Delete", "Customer", new { partitionKey = customer.PartitionKey, rowKey = customer.RowKey })" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create", "Customer")" class="btn btn-success">Create New Customer</a>

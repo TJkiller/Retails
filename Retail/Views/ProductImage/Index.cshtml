@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Azure.Storage.Blobs.Models.BlobItem>
+
+@{
+    ViewBag.Title = "Product Images";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 900px;
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            text-align: center;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: .5rem;
+        }
+
+        /* Smaller image frame style */
+        .image-preview {
+            width: 80px; /* Fixed width */
+            height: 80px; /* Fixed height */
+            object-fit: cover; /* Maintain aspect ratio */
+            border-radius: 5px;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="mb-4">Manage Product Images</h2>
+
+        <!-- Show success or error messages -->
+        @if (ViewBag.StatusMessage != null)
+        {
+            <div class="alert alert-success">
+                @ViewBag.StatusMessage
+            </div>
+        }
+
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Image Name</th>
+                    <th>Preview</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var blob in Model)
+                {
+                    <tr>
+                        <td>@blob.Name</td>
+                        <td>
+                            <!-- Display Smaller Image Preview -->
+                            <img src="@Url.Action("Download", "ProductImage", new { name = blob.Name })"
+                                 class="image-preview" alt="@blob.Name" />
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Download", "ProductImage", new { name = blob.Name })" class="btn btn-primary btn-sm">Download</a>
+                            <form asp-action="Delete" method="post" style="display:inline;">
+                                <input type="hidden" name="name" value="@blob.Name" />
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <form asp-action="Upload" method="post" enctype="multipart/form-data" class="mt-4">
+            <div class="form-group">
+                <label for="file">Upload Image</label>
+                <input type="file" name="file" class="form-control-file" required />
+            </div>
+            <button type="submit" class="btn btn-success">Upload</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

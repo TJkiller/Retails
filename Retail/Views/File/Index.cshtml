@@ -1,0 +1,125 @@
+﻿@model IEnumerable<Azure.Storage.Files.Shares.Models.ShareFileItem>
+
+@{
+    ViewBag.Title = "Files";
+}
+
+<h2>Files</h2>
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1em;
+    }
+
+    thead {
+        background-color: #333;
+        color: #fff;
+    }
+
+    th, td {
+        padding: 0.75em;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    form {
+        margin-top: 1em;
+        padding: 1em;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .form-group {
+        margin-bottom: 1em;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5em;
+        font-weight: bold;
+    }
+
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 0.375em 0.75em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .btn-primary {
+        background-color: #333;
+        border-color: #333;
+        color: #fff;
+        padding: 0.5em 1em;
+        border-radius: 4px;
+        text-align: center;
+        text-decoration: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #555;
+            border-color: #555;
+        }
+
+    .btn-danger {
+        background-color: #d9534f;
+        border-color: #d43f3a;
+        color: white;
+        padding: 0.5em 1em;
+        border-radius: 4px;
+        text-align: center;
+    }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+            border-color: #ac2925;
+        }
+</style>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Is Directory</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@(item.IsDirectory ? "Yes" : "No")</td>
+                <td>
+                    @if (!item.IsDirectory)
+                    {
+                        <form asp-action="Delete" method="post" style="display:inline;">
+                            <input type="hidden" name="fileName" value="@item.Name" />
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">Select file to upload</label>
+        <input type="file" name="file" id="file" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
